@@ -1,3 +1,4 @@
+let currentPage = 1;
 
 const form = document.querySelector('.js-search-form');
 form.addEventListener('submit', handleSubmit);
@@ -9,10 +10,9 @@ async function handleSubmit(event) {
     const searchQuery = inputValue.trim(); // Remove whitespace from the input
     console.log(searchQuery);
 
-    const searchResults = document.querySelector('.js-search-results');
-    searchResults.innerHTML = ''; // Clear the previous results
+    const loadMoreButton = document.querySelector('.js-loadMore');
 
-    const loadingIndicator = document.querySelector('.js-spinner');
+    const loadingIndicator = document.querySelector('.js-spinner')
     loadingIndicator.classList.remove('hidden'); // Display the loading spinner when submitting a search query
 
     try {
@@ -30,11 +30,36 @@ async function handleSubmit(event) {
     } finally {
         loadingIndicator.classList.add('hidden'); // Hide the loading spinner when the results are displayed
         
-        const loadMoreButton = document.querySelector('.js-loadMore');
         loadMoreButton.classList.remove('hidden');
+
+        loadMoreButton.addEventListener('click', loadMore)
     }
 }
-// Seearch Wikipedia
+
+// Load 10 more articles when click the button
+function loadMore() {
+
+    currentPage++;
+
+    const inputValue = document.querySelector('.js-search-input').value;
+    const searchQuery = inputValue.trim(); // Remove whitespace from the input
+
+    searchWikipedia(searchQuery, currentPage)
+        .then(results => {
+            if (results.query.searchinfo.totalhits === 0) {
+                alert('No results found. Try different keywords');
+                return;
+            }
+
+            displayResults(results);
+        })
+        .catch(err => {
+            console.log(err)
+            alert('Failed to fetch data')
+        })
+}
+
+// Search Wikipedia
 async function searchWikipedia(searchQuery) {
     const endPoint = 
     `
@@ -51,6 +76,8 @@ async function searchWikipedia(searchQuery) {
 // Display the results
 function displayResults(results) {
     const searchResults = document.querySelector('.js-search-results');
+    searchResults.innerHTML = "";
+
     results.query.search.forEach(result => {
         const url = `https://en.wikipedia.org/?curid=${result.pageid}`;
         searchResults.insertAdjacentHTML(  // Each result is appended to the searchResults element using the DOM insertAdjacentHTML method
@@ -69,9 +96,4 @@ function displayResults(results) {
     })
 }
 
-const loadMoreButton = document.querySelector('.js-loadMore');
-loadMore.addEventListener('click', loadMore)
 
-function loadMore() {
-
-}
