@@ -20,7 +20,9 @@ You can find the markup and styles for this project on [JSFiddle](https://jsfidd
 
 ## Live demo
 
-The completed version of this project is live at https://freshman-wikipedia.surge.sh/ 
+The original completed version of this project is live at [freshman.tech](https://freshman-wikipedia.surge.sh/) 
+
+Click [here](https://naomit9.github.io/wikipedia-search-app/) to see my live demo with pagination feature
 
 ## Prerequisites
 Basic familiarity with HTML and CSS and JavaScript
